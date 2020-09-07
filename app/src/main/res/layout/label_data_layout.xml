@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="300dp">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_marginBottom="20dp"
+        android:layout_height="360dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:gravity="center"
+                android:layout_margin="10dp"
+                android:background="@drawable/rectangle_line_background"
+                >
+                <Spinner
+                    android:id="@+id/invcode"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="10dp"
+                android:padding="5dp"
+                android:background="@drawable/rectangle_line_background"
+                android:orientation="horizontal">
+
+
+                <EditText
+                    android:id="@+id/rate"
+                    android:layout_width="0dp"
+                    android:hint="Rate"
+                    android:gravity="center"
+                    android:maxLength="7"
+                    android:layout_weight="1"
+                    android:nextFocusForward="@+id/addItem"
+
+                    android:imeOptions="actionNext"
+                    android:inputType="number"
+                    android:singleLine="true"
+                    android:layout_height="wrap_content"/>
+
+                <EditText
+                    android:id="@+id/guard"
+                    android:layout_width="0dp"
+                    android:hint="Guard"
+                    android:gravity="center"
+                    android:maxLength="3"
+                    android:layout_weight="1"
+                    android:nextFocusForward="@+id/addItem"
+
+                    android:imeOptions="actionNext"
+                    android:inputType="number"
+                    android:singleLine="true"
+                    android:layout_height="wrap_content"/>
+                <EditText
+                    android:id="@+id/amt"
+                    android:layout_width="0dp"
+                    android:hint="Duty"
+                    android:gravity="center"
+                    android:maxLength="3"
+                    android:layout_weight="1"
+                    android:imeOptions="actionNext"
+                    android:inputType="numberDecimal"
+                    android:editable="false"
+                    android:singleLine="true"
+                    android:layout_height="wrap_content"/>
+
+
+                <LinearLayout
+                    android:id="@+id/addItem"
+                    android:layout_width="20dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginLeft="5dp"
+                    android:background="@drawable/circlr_shape_line"
+                    android:gravity="center">
+
+                    <TextView
+                        android:id="@+id/positiveText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+
+                        android:gravity="center"
+                        android:text="+" />
+                </LinearLayout>
+            </LinearLayout>
+          <!--  <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@drawable/view_gray_line"/>-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_margin="10dp"
+                android:background="@drawable/rectangle_line_background"
+                android:layout_height="150dp">
+              <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/labelRecycle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_gravity="bottom"
+            android:gravity="bottom"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_height="wrap_content">
+            <Button
+                android:id="@+id/save"
+                android:layout_width="match_parent"
+                android:gravity="center"
+                android:background="@drawable/primary_corner_radi_background"
+                android:layout_gravity="bottom"
+                android:textColor="#FFFF"
+                android:layout_height="wrap_content"
+                android:text="Save"/>
+        </LinearLayout>
+    </FrameLayout>
+
+</RelativeLayout>
