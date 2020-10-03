@@ -31,11 +31,11 @@ public class PDFUtil {
     /**
      * Page width for our PDF.
      */
-    private static final double PDF_PAGE_WIDTH = 8.3 * 72;
+    private static final double PDF_PAGE_WIDTH = 9.3 * 72;
     /**
      * Page height for our PDF.
      */
-    private static final double PDF_PAGE_HEIGHT = 11.7 * 72;
+    private static final double PDF_PAGE_HEIGHT = 12 * 72;
     /**
      * Singleton instance for PDFUtil.
      */

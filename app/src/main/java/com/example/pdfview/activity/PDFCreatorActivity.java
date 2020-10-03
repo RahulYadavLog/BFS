@@ -16,6 +16,7 @@ import com.example.pdfview.R;
 import com.example.pdfview.utils.FileManager;
 import com.example.pdfview.utils.PDFUtil;
 import com.example.pdfview.views.PDFBody;
+import com.example.pdfview.views.PDFFooterView;
 import com.example.pdfview.views.PDFHeaderView;
 import com.example.pdfview.views.basic.PDFView;
 import com.github.chrisbanes.photoview.PhotoView;
@@ -216,6 +217,7 @@ public abstract class PDFCreatorActivity extends AppCompatActivity implements Vi
     }
 
     protected abstract PDFHeaderView getHeaderView(int page);
+
 
     protected abstract PDFBody getBodyViews();
 

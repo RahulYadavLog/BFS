@@ -49,8 +49,8 @@ public class AddDetailActivity1 extends AppCompatActivity {
     String monthName;
     int monthvalue;
     boolean sGstCheck=false,GstCheck=true;
-    public static  ArrayList<Integer > amount = new ArrayList<Integer>();
-    public static  ArrayList<Integer > rt = new ArrayList<Integer>();
+    public static  ArrayList<Double > amount = new ArrayList<Double>();
+    public static  ArrayList<Double > rt = new ArrayList<Double>();
     public static  ArrayList<String  > guardcount = new ArrayList<String>();
     public static  ArrayList<String  > grd = new ArrayList<String >();
 
@@ -93,28 +93,28 @@ public class AddDetailActivity1 extends AppCompatActivity {
                 switch (position)
                 {
                     case 0:
-                        billAddress= "\tEltee Geejay CHS.LTD.\n\tSai Baba  Nagar \n\tBoriwali  West\n\tMumbai";
+                        billAddress= "\tEltee Geejay CHS.LTD. , \n\tSai Baba  Nagar , \n\tBoriwali  West , \n\tMumbai.";
                         break;
                     case 1:
-                        billAddress= "\tHormoni CHS Ltd.\n\tMarve Road,  \n\tMalad (W)\n\tMumbai.400095";
+                        billAddress= "\tHormoni CHS Ltd. , \n\tMarve Road,  , \n\tMalad (W) , \n\tMumbai.400095";
                         break;
                     case 2:
-                        billAddress= "\tJay Sukh Sagar CHS.Ltd. \n\tM. G . Road Patel Nagar \n\tKandivali West Mumbai 400067";
+                        billAddress= "\tJay Sukh Sagar CHS.Ltd. , \n\tM. G . Road Patel Nagar  , \n\tKandivali West Mumbai 400067";
                         break;
                     case 3:
-                        billAddress= "\tNew Shreeji Chemist \n\tM g  Road ,opp. SVC Bank Kandivali (w),\n\tMumbai -400 067.";
+                        billAddress= "\tNew Shreeji Chemist , \n\tM g  Road ,opp. SVC Bank Kandivali (w) , \n\tMumbai -400 067.";
                         break;
                     case 4:
-                        billAddress= "\tNew Shreeji Chemist \n\tM g  Road ,opp. SVC Bank Kandivali (w),\n\tMumbai -400 067.";
+                        billAddress= "\tNew Shreeji Chemist , \n\tM g  Road ,opp. SVC Bank Kandivali (w) , \n\tMumbai -400 067.";
                         break;
                     case 5:
-                        billAddress= "\tRamesh And Associates Wagal \n\tCompound  Khuni Gav Bhiwandi";
+                        billAddress= "\tRamesh And Associates Wagal , \n\tCompound  Khuni Gav Bhiwandi";
                         break;
                     case 6:
-                        billAddress= "\tSHREE KANDIVALI ACHAL GACHH JAIN \n\tSANGH SAI BAUG ESTATE MEENA \n\tSUTHAR MARG, M.G.CROSS RD NO.3,\n\tKANDIVALI (W) ,MUMBAI-400 067.";
+                        billAddress= "\tSHREE KANDIVALI ACHAL GACHH JAIN , \n\tSANGH SAI BAUG ESTATE MEENA , \n\tSUTHAR MARG, M.G.CROSS RD NO.3 , \n\tKANDIVALI (W) ,MUMBAI-400 067.";
                         break;
                     case 7:
-                        billAddress= "\tSimca Adverting \n\tC-6, Saranga  Bungalow,\n\t3rd X Lane, Lokhandwala Market ,\n\tAndheri(W) ,Mumbai- 400-053.\n\t(Khandala Bungalow)";
+                        billAddress= "\tSimca Adverting , \n\tC-6, Saranga  Bungalow , \n\t3rd X Lane, Lokhandwala Market , \n\tAndheri(W) ,Mumbai- 400-053. , \n\t(Khandala Bungalow)";
                         break;
                 }
 
@@ -193,8 +193,8 @@ public class AddDetailActivity1 extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 for (int i = 0; i <labelActivityModels.size() ; i++) {
-                    amount.add(i, Integer.valueOf(labelActivityModels.get(i).getAmount()));
-                    rt.add(i, Integer.valueOf(labelActivityModels.get(i).getRate()));
+                    amount.add(i, Double.valueOf(labelActivityModels.get(i).getAmount()));
+                    rt.add(i, Double.valueOf(labelActivityModels.get(i).getRate()));
                     grd.add(i, (labelActivityModels.get(i).getGuardType()));
                     guardcount.add(i, (labelActivityModels.get(i).getGuard()));
 
@@ -215,8 +215,8 @@ public class AddDetailActivity1 extends AppCompatActivity {
                     sGstCheck=false;
                 }
                 Intent intent=new Intent(AddDetailActivity1.this,MainActivity.class);
-                intent.putIntegerArrayListExtra("amount",amount);
-                intent.putIntegerArrayListExtra("rate",rt);
+          /*      intent.putIntegerArrayListExtra("amount",amount);
+                intent.putIntegerArrayListExtra("rate",rt);*/
                 intent.putStringArrayListExtra("guard",grd);
                 intent.putStringArrayListExtra("guardCount",guardcount);
                 intent.putExtra("date",billDate.getText().toString());
@@ -227,6 +227,7 @@ public class AddDetailActivity1 extends AppCompatActivity {
                 intent.putExtra("sgst",sGstCheck);
                 intent.putExtra("gstno", gstno.getText().toString());
                 intent.putExtra("month",monthName);
+                intent.putExtra("exsistingList", GsonUtils.getInstance().toJson(labelActivityModels));
                 startActivity(intent);
 
 
@@ -327,13 +328,12 @@ public class AddDetailActivity1 extends AppCompatActivity {
                              /*   float number = Float.valueOf(etAmount.getText().toString());
                                 int i = Math.round(number);*/
 
-                                float frate = Float.valueOf(etRate.getText().toString());
-                                int j= Math.round(frate);
-                                String round_rate= String.valueOf(j);
-                                int  oneDay=j/30;
+                                double frate = Double.valueOf(etRate.getText().toString());
+
+                                String round_rate= String.valueOf(frate);
+                                double  oneDay=frate/30;
                                 double totalAmount=oneDay*(Double.valueOf(etAmount.getText().toString()));
-                                long totalint=Math.round(totalAmount);
-                                String round_Ammount= String.valueOf(totalint);
+                                String round_Ammount= String.valueOf(totalAmount);
                                 String strGuard=etguard.getText().toString();
 
                                 labelMasterModel.add(new LabelMasterModel(guardName,round_rate,round_Ammount,strGuard));
@@ -345,6 +345,7 @@ public class AddDetailActivity1 extends AppCompatActivity {
 
                                 etRate.setText("");
                                 etAmount.setText("");
+                                etguard.setText("");
                                 etRate.requestFocus();
                             } catch (Exception e) {
                                 e.getMessage();

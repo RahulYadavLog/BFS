@@ -2,14 +2,21 @@ package com.example.pdfview;
 
 public class PdfGuardModel {
 
-    String guard,rate,amount;
+    String guardType, rate,Amount,guard;
 
-    public String getGuard() {
-        return guard;
+    public PdfGuardModel(String guardType, String rate, String amount, String guard) {
+        this.guardType = guardType;
+        this.rate = rate;
+        Amount = amount;
+        this.guard = guard;
     }
 
-    public void setGuard(String guard) {
-        this.guard = guard;
+    public String getGuardType() {
+        return guardType;
+    }
+
+    public void setGuardType(String guardType) {
+        this.guardType = guardType;
     }
 
     public String getRate() {
@@ -21,16 +28,18 @@ public class PdfGuardModel {
     }
 
     public String getAmount() {
-        return amount;
+        return Amount;
     }
 
     public void setAmount(String amount) {
-        this.amount = amount;
+        Amount = amount;
     }
 
-    public PdfGuardModel(String guard, String rate, String amount) {
+    public String getGuard() {
+        return guard;
+    }
+
+    public void setGuard(String guard) {
         this.guard = guard;
-        this.rate = rate;
-        this.amount = amount;
     }
 }

@@ -25,29 +25,37 @@ import android.widget.Toast;
 import com.example.pdfview.activity.PDFCreatorActivity;
 import com.example.pdfview.utils.PDFUtil;
 import com.example.pdfview.views.PDFBody;
+import com.example.pdfview.views.PDFFooterView;
 import com.example.pdfview.views.PDFHeaderView;
 import com.example.pdfview.views.PDFTableView;
 import com.example.pdfview.views.basic.PDFHorizontalView;
+import com.example.pdfview.views.basic.PDFHorizontalWait1;
+import com.example.pdfview.views.basic.PDFHorizontalWait2;
+import com.example.pdfview.views.basic.PDFHorizontalWait3;
+import com.example.pdfview.views.basic.PDFHorizontalWait4;
 import com.example.pdfview.views.basic.PDFImageView;
 import com.example.pdfview.views.basic.PDFLineSeparatorView;
 import com.example.pdfview.views.basic.PDFTextView;
 import com.example.pdfview.views.basic.PDFVerticalView;
 import com.example.pdfview.views.basic.PDFVerticalWaitView;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.lang.reflect.Type;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.List;
+
 
 public class MainActivity extends PDFCreatorActivity {
 
     int total=0;
 
-    public static  ArrayList<Integer> amt = new ArrayList<Integer>();
-    public static  ArrayList<Integer> rate = new ArrayList<Integer>();
+
     public static  ArrayList<String> guard = new ArrayList<String >();
     public static  ArrayList<String> guardcount = new ArrayList<String >();
-
+AddDetailActivity1 addDetailActivity1;
     int gurdSize;
     String billDate,billNo,billAddress;
     int intGst,intSGst;
@@ -56,13 +64,19 @@ public class MainActivity extends PDFCreatorActivity {
     String gstno;
     FileOutputStream outputStream;
     private File pdfFile;
-    ArrayList<PdfGuardModel> pdfGuardModels;
+    private List<PdfGuardModel> exsistingList = new ArrayList<>();
     String monthName;
-
-
+    Context context;
+    public MainActivity(Context context, String s , String strGropNamePdf) {
+        this.context = context;
+        Type type = new TypeToken<List<LabelActivityModel>>() {
+        }.getType();
+        exsistingList = GsonUtils.getInstance().fromJson(s, type);
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        addDetailActivity1 = (AddDetailActivity1) getApplicationContext();
         Bundle bundle = getIntent().getExtras();
         if(bundle!=null)
         {
@@ -75,8 +89,8 @@ public class MainActivity extends PDFCreatorActivity {
         sgst=bundle.getBoolean("sgst");
         gstno=bundle.getString("gstno");
         for (int i = 0; i <gurdSize ; i++) {
-            amt = bundle.getIntegerArrayList("amount");
-            rate = bundle.getIntegerArrayList("rate");
+            /*amt = bundle.getIntegerArrayList("amount");
+            rate = bundle.getIntegerArrayList("rate");*/
             guard = bundle.getStringArrayList("guard");
             guardcount = bundle.getStringArrayList("guardCount");
         }
@@ -86,7 +100,7 @@ public class MainActivity extends PDFCreatorActivity {
         }
         for (int i = 0; i <gurdSize ; i++) {
 
-           total +=amt.get(i);
+           total +=addDetailActivity1.amount.get(i);
         }
 
         if(gst==true)
@@ -146,52 +160,75 @@ public class MainActivity extends PDFCreatorActivity {
     protected PDFHeaderView getHeaderView(int pageIndex) {
         PDFHeaderView headerView = new PDFHeaderView(getApplicationContext());
 
+
+
+
+        PDFHorizontalWait2 invoiceHeder2 = new PDFHorizontalWait2(getApplicationContext());
+
         PDFTextView pdfTextViewPage = new PDFTextView(getApplicationContext(), PDFTextView.PDF_TEXT_SIZE.HEADER);
         SpannableString word = new SpannableString("INVOICE");
         word.setSpan(new ForegroundColorSpan(Color.DKGRAY), 0, word.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         pdfTextViewPage.setText(word);
         pdfTextViewPage.setLayout(new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT, 0 ));
+                LinearLayout.LayoutParams.WRAP_CONTENT, 0));
         pdfTextViewPage.getView().setGravity(Gravity.CENTER_HORIZONTAL);
         pdfTextViewPage.getView().setTypeface(pdfTextViewPage.getView().getTypeface(), Typeface.BOLD);
 
-
         headerView.addView(pdfTextViewPage);
+
+
       /*  PDFLineSeparatorView lineSeparatorView12 = new PDFLineSeparatorView(getApplicationContext()).setBackgroundColor(Color.BLACK);
         headerView.addView(lineSeparatorView12);*/
 
+
         PDFHorizontalView horizontalView = new PDFHorizontalView(getApplicationContext());
+        PDFHorizontalWait1 horizontalwait2 = new PDFHorizontalWait1(getApplicationContext());
 
 
         PDFImageView imageView = new PDFImageView(getApplicationContext());
         LinearLayout.LayoutParams imageLayoutParam = new LinearLayout.LayoutParams(
-                140,
-                100, 0);
-        imageView.setImageScale(ImageView.ScaleType.FIT_CENTER);
+                100,
+                100, 1);
+        imageView.setImageScale(ImageView.ScaleType.FIT_START);
+
         imageView.setImageResource(R.drawable.logo2);
         imageLayoutParam.setMargins(0, 0, 0, 0);
         imageView.setLayout(imageLayoutParam);
-        horizontalView.addView(imageView);
+        horizontalwait2.addView(imageView);
+        horizontalView.addView(horizontalwait2);
+        PDFHorizontalWait2 horizontalwait1 = new PDFHorizontalWait2(getApplicationContext());
+
+
+
+        /*PDFTextView newline = new PDFTextView(getApplicationContext(), PDFTextView.PDF_TEXT_SIZE.P);
+        newline.setText("\t\t\t\t\t\t\t\t\t\t\t\t\t\t");
+        horizontalView.addView(newline);
+        PDFTextView newline1 = new PDFTextView(getApplicationContext(), PDFTextView.PDF_TEXT_SIZE.P);
+        newline1.setText("");
+        horizontalView.addView(newline1);*/
 
 
 
         PDFVerticalView verticalView = new PDFVerticalView(getApplicationContext());
 
         PDFTextView newline2 = new PDFTextView(getApplicationContext(), PDFTextView.PDF_TEXT_SIZE.H3);
-        newline2.setText("\n\n\t\t\t\t\t\t\t\t\t\t\t\t\tOffice Address :");
+        newline2.setText("\nOffice Address :");
         newline2.getView().setTypeface(pdfTextViewPage.getView().getTypeface(), Typeface.BOLD);
+
         verticalView.addView(newline2);
 
         PDFTextView newline3 = new PDFTextView(getApplicationContext(), PDFTextView.PDF_TEXT_SIZE.P);
-        newline3.setText("\t\t\t\t\t\t\t\t\t\t\t\t\tJai Ambe Soc. M. G. \n\t\t\t\t\t\t\t\t\t\t\t\t\tCross Road No.3\n\t\t\t\t\t\t\t\t\t\t\t\t\tKandivali (West)\n\t\t\t\t\t\t\t\t\t\t\t\t\tMumbai 400 067.");
+        newline3.setText("Jai Ambe Soc. M. G. , \nCross Road No.3 , \nKandivali (West) , \nMumbai 400 067.");
+
         verticalView.addView(newline3);
-        horizontalView.addView(verticalView);
+        horizontalwait1.addView(verticalView);
+        horizontalView.addView(horizontalwait1);
 
         headerView.addView(horizontalView);
 
-       /* PDFLineSeparatorView lineSeparatorView1 = new PDFLineSeparatorView(getApplicationContext()).setBackgroundColor(Color.WHITE);
-        headerView.addView(lineSeparatorView1);*/
+        PDFLineSeparatorView lineSeparatorView1 = new PDFLineSeparatorView(getApplicationContext()).setBackgroundColor(Color.WHITE);
+        headerView.addView(lineSeparatorView1);
 
         return headerView;
     }
@@ -199,31 +236,35 @@ public class MainActivity extends PDFCreatorActivity {
     @Override
     protected PDFBody getBodyViews() {
         PDFBody pdfBody = new PDFBody();
+
+
         PDFHorizontalView horizontalView = new PDFHorizontalView(getApplicationContext());
+        PDFHorizontalWait1 horizontalView1 = new PDFHorizontalWait1(getApplicationContext());
 
         PDFTextView pdfCompanyNameView = new PDFTextView(getApplicationContext(), PDFTextView.PDF_TEXT_SIZE.H2);
         pdfCompanyNameView.setText("Bombay Facility Service");
         pdfCompanyNameView.getView().setTypeface(pdfCompanyNameView.getView().getTypeface(), Typeface.BOLD);
 
-        horizontalView.addView(pdfCompanyNameView);
-        PDFTextView pdfCompanyAddre = new PDFTextView(getApplicationContext(), PDFTextView.PDF_TEXT_SIZE.H3);
-        pdfCompanyAddre.setText("\t\t\t\t\t");
-        horizontalView.addView(pdfCompanyAddre);
+        horizontalView1.addView(pdfCompanyNameView);
+        horizontalView.addView(horizontalView1);
+        PDFHorizontalWait2 horizontalView2 = new PDFHorizontalWait2(getApplicationContext());
+
         PDFVerticalView verticalView = new PDFVerticalView(getApplicationContext());
         PDFTextView pdfCompanyMobile = new PDFTextView(getApplicationContext(), PDFTextView.PDF_TEXT_SIZE.P);
-        pdfCompanyMobile.setText("\t\t\t\t  Mobile No.:09819758831");
+        pdfCompanyMobile.setText("\t\t\t  Mo. No.:09819758831");
         pdfCompanyMobile.setTextColor(Color.BLUE);
         verticalView.addView(pdfCompanyMobile);
         PDFTextView pdfCompanyemail= new PDFTextView(getApplicationContext(), PDFTextView.PDF_TEXT_SIZE.P);
         pdfCompanyemail.setText("Email: yadavsudarshan1970@gmail.com");
         pdfCompanyemail.setTextColor(Color.BLUE);
         verticalView.addView(pdfCompanyemail);
-        horizontalView.addView(verticalView);
+        horizontalView2.addView(verticalView);
+        horizontalView.addView(horizontalView2);
         pdfBody.addView(horizontalView);
         PDFLineSeparatorView lineSeparatorView1 = new PDFLineSeparatorView(getApplicationContext()).setBackgroundColor(Color.BLACK);
         pdfBody.addView(lineSeparatorView1);
         PDFHorizontalView horizontal_bill_View = new PDFHorizontalView(getApplicationContext());
-
+        PDFHorizontalWait3 horizontalViewaddress = new PDFHorizontalWait3(getApplicationContext());
         PDFVerticalWaitView verticalBillview = new PDFVerticalWaitView(getApplicationContext());
 
         PDFTextView pdfCompanybillAdd = new PDFTextView(getApplicationContext(), PDFTextView.PDF_TEXT_SIZE.P);
@@ -234,17 +275,21 @@ public class MainActivity extends PDFCreatorActivity {
         pdfCompanyGstNo.setTextColor(Color.BLUE);
 
         verticalBillview.addView(pdfCompanyGstNo);
-        horizontal_bill_View.addView(verticalBillview);
+        horizontalViewaddress.addView(verticalBillview);
+        horizontal_bill_View.addView(horizontalViewaddress);
+        PDFHorizontalWait2 horizontalViewDate = new PDFHorizontalWait2(getApplicationContext());
 
         PDFVerticalWaitView verticalDateView = new PDFVerticalWaitView(getApplicationContext());
         PDFTextView pdfCompanybillDate = new PDFTextView(getApplicationContext(), PDFTextView.PDF_TEXT_SIZE.P);
-        pdfCompanybillDate.setText("\n\t\t\t\t\t\t\t\t\t\t\t\t\tDate:"+billDate);
+        pdfCompanybillDate.setText("\nDate:"+billDate);
         verticalDateView.addView(pdfCompanybillDate);
         PDFTextView pdfCompanyBillNo= new PDFTextView(getApplicationContext(), PDFTextView.PDF_TEXT_SIZE.P);
-        pdfCompanyBillNo.setText("\n\t\t\t\t\t\t\t\t\t\t\t\t\tBill No:"+billNo);
+        pdfCompanyBillNo.setText("\nBill No:"+billNo);
         verticalDateView.addView(pdfCompanyBillNo);
-        horizontal_bill_View.addView(verticalDateView);
+        horizontalViewDate.addView(verticalDateView);
+        horizontal_bill_View.addView(horizontalViewDate);
         pdfBody.addView(horizontal_bill_View);
+
 
 
 
@@ -292,7 +337,7 @@ public class MainActivity extends PDFCreatorActivity {
         pdfBody.addView(newline);
         for (int j = 0; j <gurdSize ; j++) {
             PDFTableView.PDFTableRowView tableRowView1 = new PDFTableView.PDFTableRowView(getApplicationContext());
-            String[] textInTable = {""+guard.get(j), "("+guardcount.get(j)+")", "\t"+rate.get(j)+".00", "\t\t"+amt.get(j)+".00"};
+            String[] textInTable = {""+guard.get(j), "("+guardcount.get(j)+")", "\t"+addDetailActivity1.rt.get(j)+".00", "\t\t"+addDetailActivity1.amount.get(j)+".00"};
             for(int i = 0;  i<textInTable.length; i++) {
                 PDFTextView pdfTextView = new PDFTextView(getApplicationContext(), PDFTextView.PDF_TEXT_SIZE.P);
                 pdfTextView.setText(textInTable[i]);
@@ -303,26 +348,56 @@ public class MainActivity extends PDFCreatorActivity {
 
 
 
-
+        for (int j = 0; j <5-gurdSize ; j++) {
+            PDFTableView.PDFTableRowView tableRowView1 = new PDFTableView.PDFTableRowView(getApplicationContext());
+            String[] textInTable = {" ", " "," ", " "," ", " "," "};
+            for(int i = 0;  i<textInTable.length; i++) {
+                PDFTextView pdfTextView = new PDFTextView(getApplicationContext(), PDFTextView.PDF_TEXT_SIZE.P);
+                pdfTextView.setText(textInTable[i]);
+                tableRowView1.addToRow(pdfTextView);
+            }
+            pdfBody.addView(tableRowView1);
+        }
         PDFTextView newline2 = new PDFTextView(getApplicationContext(), PDFTextView.PDF_TEXT_SIZE.P);
         newline2.setText("");
         pdfBody.addView(newline2);
 
         PDFLineSeparatorView lineSeparatorView6 = new PDFLineSeparatorView(getApplicationContext()).setBackgroundColor(Color.BLACK);
         pdfBody.addView(lineSeparatorView6);
+        PDFHorizontalView horizontaltaxable = new PDFHorizontalView(getApplicationContext());
+        PDFHorizontalWait3 horizontalView1taxable = new PDFHorizontalWait3(getApplicationContext());
         PDFTableView.PDFTableRowView tableRowView4= new PDFTableView.PDFTableRowView(getApplicationContext());
-        String[] taxableValue = {"Taxable Value", "", "", "\t\t"+total+".00"};
+        String[] taxableValue = {"Taxable Value",""};
         for(int i = 0;  i<taxableValue.length; i++) {
             PDFTextView pdfTextView = new PDFTextView(getApplicationContext(), PDFTextView.PDF_TEXT_SIZE.P);
             pdfTextView.setText(taxableValue[i]);
             pdfTextView.setBackgroundColor(Color.GRAY);
             tableRowView4.addToRow(pdfTextView);
+
         }
-        pdfBody.addView(tableRowView4);
+        horizontalView1taxable.addView(tableRowView4);
+        horizontaltaxable.addView(horizontalView1taxable);
+        PDFHorizontalWait2 horizontalView2taxable = new PDFHorizontalWait2(getApplicationContext());
+        PDFTableView.PDFTableRowView tableRowtaxable= new PDFTableView.PDFTableRowView(getApplicationContext());
+        String[] taxable = {" "+total+".00"};
+        for(int i = 0;  i<taxable.length; i++) {
+            PDFTextView pdfTextView = new PDFTextView(getApplicationContext(), PDFTextView.PDF_TEXT_SIZE.P);
+            pdfTextView.setText(taxable[i]);
+            pdfTextView.setBackgroundColor(Color.GRAY);
+            tableRowtaxable.addToRow(pdfTextView);
+
+        }
+        horizontalView2taxable.addView(tableRowtaxable);
+        horizontaltaxable.addView(horizontalView2taxable);
+        pdfBody.addView(horizontaltaxable);
+
+
         PDFLineSeparatorView lineSeparatorView7 = new PDFLineSeparatorView(getApplicationContext()).setBackgroundColor(Color.BLACK);
         pdfBody.addView(lineSeparatorView7);
+        PDFHorizontalView horizontalcgst = new PDFHorizontalView(getApplicationContext());
+        PDFHorizontalWait4 horizontalView1cgst = new PDFHorizontalWait4(getApplicationContext());
         PDFTableView.PDFTableRowView tableRowView5= new PDFTableView.PDFTableRowView(getApplicationContext());
-        String[] GST = {"\nCGST No. 27ADRPY4158R3Z4,@ 09%" , "\n\t\t\t\t\t\t\t\t\t"+intGst+".00"};
+        String[] GST = {"\nCGST No. 27ADRPY4158R3Z4,@ 09%"};
         for(int i = 0;  i<GST.length; i++) {
             PDFTextView pdfTextView = new PDFTextView(getApplicationContext(), PDFTextView.PDF_TEXT_SIZE.P);
             pdfTextView.setText(GST[i]);
@@ -333,31 +408,66 @@ public class MainActivity extends PDFCreatorActivity {
 
             tableRowView5.addToRow(pdfTextView);
         }
-        pdfBody.addView(tableRowView5);
+        horizontalView1cgst.addView(tableRowView5);
+        horizontalcgst.addView(horizontalView1cgst);
+        PDFHorizontalWait2 horizontalView2cgst = new PDFHorizontalWait2(getApplicationContext());
+        PDFTableView.PDFTableRowView tableRowViewcgst= new PDFTableView.PDFTableRowView(getApplicationContext());
+        String[] cGST = {"\n "+intGst+".00"};
+        for(int i = 0;  i<cGST.length; i++) {
+            PDFTextView pdfTextView = new PDFTextView(getApplicationContext(), PDFTextView.PDF_TEXT_SIZE.P);
+            pdfTextView.setText(cGST[i]);
+            pdfTextView.setLayout(new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT, 1 ));
+
+            tableRowViewcgst.addToRow(pdfTextView);
+        }
+        horizontalView2cgst.addView(tableRowViewcgst);
+        horizontalcgst.addView(horizontalView2cgst);
+
+        pdfBody.addView(horizontalcgst);
+
+        PDFHorizontalView horizontalsgst = new PDFHorizontalView(getApplicationContext());
+        PDFHorizontalWait4 horizontalView1sgst = new PDFHorizontalWait4(getApplicationContext());
         PDFTableView.PDFTableRowView tableRowView6= new PDFTableView.PDFTableRowView(getApplicationContext());
-        String[] SGST  = {"\nSGST NO .27ADRPY4158R3Z4,@ 09%","\n\t\t\t\t\t\t\t\t\t"+intSGst+".00"};
+        String[] SGST  = {"\nSGST NO .27ADRPY4158R3Z4,@ 09%"};
         for(int i = 0;  i<SGST .length; i++) {
             PDFTextView pdfTextView = new PDFTextView(getApplicationContext(), PDFTextView.PDF_TEXT_SIZE.P);
             pdfTextView.setText(SGST[i]);
 
             tableRowView6.addToRow(pdfTextView);
         }
-        pdfBody.addView(tableRowView6);
+        horizontalView1sgst.addView(tableRowView6);
+        horizontalsgst.addView(horizontalView1sgst);
+
+
+        PDFHorizontalWait2 horizontalView2sgst = new PDFHorizontalWait2(getApplicationContext());
+        PDFTableView.PDFTableRowView tableRowView7= new PDFTableView.PDFTableRowView(getApplicationContext());
+        String[] sgst  = {"\n "+intSGst+".00"};
+        for(int i = 0;  i<sgst .length; i++) {
+            PDFTextView pdfTextView = new PDFTextView(getApplicationContext(), PDFTextView.PDF_TEXT_SIZE.P);
+            pdfTextView.setText(sgst[i]);
+            tableRowView7.addToRow(pdfTextView);
+        }
+        horizontalView2sgst.addView(tableRowView7);
+        horizontalsgst.addView(horizontalView2sgst);
+
+        pdfBody.addView(horizontalsgst);
         PDFTextView pdfTextView = new PDFTextView(getApplicationContext(), PDFTextView.PDF_TEXT_SIZE.P);
         pdfTextView.setText("\nPAN NO. ADRPY4158R\n");
         pdfBody.addView(pdfTextView);
 
         PDFLineSeparatorView lineSeparatorView11 = new PDFLineSeparatorView(getApplicationContext()).setBackgroundColor(Color.BLACK);
         pdfBody.addView(lineSeparatorView11);
-        PDFTableView.PDFTableRowView tableRowView7= new PDFTableView.PDFTableRowView(getApplicationContext());
-        String[] total = {"Total Amount", "", "", "\t\t"+totalAmount+".00"};
+        PDFTableView.PDFTableRowView tableRowView13= new PDFTableView.PDFTableRowView(getApplicationContext());
+        String[] total = {"Total Amount", "", "", "\t\t  "+totalAmount+".00"};
         for(int i = 0;  i<total.length; i++) {
             PDFTextView pdftotal = new PDFTextView(getApplicationContext(), PDFTextView.PDF_TEXT_SIZE.P);
             pdftotal.setText(total[i]);
             pdftotal.setBackgroundColor(Color.GRAY);
-            tableRowView7.addToRow(pdftotal);
+            tableRowView13.addToRow(pdftotal);
         }
-        pdfBody.addView(tableRowView7);
+        pdfBody.addView(tableRowView13);
         PDFLineSeparatorView lineSeparatorView9 = new PDFLineSeparatorView(getApplicationContext()).setBackgroundColor(Color.BLACK);
         pdfBody.addView(lineSeparatorView9);
         PDFTextView space = new PDFTextView(getApplicationContext(), PDFTextView.PDF_TEXT_SIZE.P);
@@ -393,18 +503,22 @@ public class MainActivity extends PDFCreatorActivity {
         pdfBody.addView(tableRowView9);
 
         PDFTextView pdftotal = new PDFTextView(getApplicationContext(), PDFTextView.PDF_TEXT_SIZE.P);
-        pdftotal.setText("\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tAuthorised Signature");
+        pdftotal.setText("\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tAuthorised Signature");
         pdfBody.addView(pdftotal);
        /* PDFTextView pdfIconLicenseView = new PDFTextView(getApplicationContext(), PDFTextView.PDF_TEXT_SIZE.H3);
         Spanned icon8Link = Html.fromHtml("Icon from <a href='https://icons8.com'>https://icons8.com</a>");
         pdfIconLicenseView.getView().setText(icon8Link);
         pdfBody.addView(pdfIconLicenseView);*/
 
+
         return pdfBody;
+
     }
 
     @Override
     protected void onNextClicked(File savedPDFFile) {
+
+        
         Intent intentShareFile = new Intent(Intent.ACTION_SEND);
 
         Uri apkURI = FileProvider.getUriForFile(
@@ -426,6 +540,9 @@ public class MainActivity extends PDFCreatorActivity {
         String BFS;
         File folder = new File(Environment.getExternalStorageDirectory().toString(), "BFS");
         PrintManager printManager=(PrintManager)getSystemService(Context.PRINT_SERVICE);
+        PrintAttributes.Builder attributes = new PrintAttributes.Builder();
+        attributes.setMediaSize(PrintAttributes.MediaSize.ISO_A4);
+
         try {
 
             PrintDocumentAdapter printDocumentAdapter = new PdfDocumentAdapter(MainActivity.this,"/storage/emulated/0/Android/data/com.example.pdfview/files/temp/Month/test.pdf");
