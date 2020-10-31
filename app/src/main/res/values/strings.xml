@@ -5,4 +5,9 @@
     <string name="text_generating_pdf">Generating PDF</string>
     <string name="text_next_page">Next Page</string>
     <string name="text_previous_page">Previous Page</string>
+    <string name="action_sign_in">Login</string>
+    <string name="action_register">Sign Up</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="title_activity_home">Home</string>
 </resources>

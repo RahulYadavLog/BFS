@@ -11,6 +11,10 @@
         <color name="colorIcons">#FFFFFF</color>
         <color name="colorDivider">#B6B6B6</color>
 
+
+        <color name="white">#FFF</color>
+        <color name="black">#000</color>
+        <color name="lightWhite">#e6f5ff</color>
         <!-- Material Color Palette -->
         <color name="red_50">#FFEBEE</color>
         <color name="red_100">#FFCDD2</color>

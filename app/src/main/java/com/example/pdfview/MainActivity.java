@@ -43,6 +43,7 @@ import com.google.gson.reflect.TypeToken;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.lang.reflect.Type;
+import java.math.BigDecimal;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,33 +51,36 @@ import java.util.List;
 
 public class MainActivity extends PDFCreatorActivity {
 
-    int total=0;
+    double total=0;
 
 
+    public static  ArrayList<Double> amount = new ArrayList<Double>();
+    public static  ArrayList<Double> oneDayRate = new ArrayList<Double>();
+    public static  ArrayList<Integer> rate = new ArrayList<Integer >();
+    public static  ArrayList<String> strduty = new ArrayList<String >();
+    public static  ArrayList<Double> dblduty = new ArrayList<Double>();
     public static  ArrayList<String> guard = new ArrayList<String >();
     public static  ArrayList<String> guardcount = new ArrayList<String >();
-AddDetailActivity1 addDetailActivity1;
     int gurdSize;
     String billDate,billNo,billAddress;
-    int intGst,intSGst;
+    double intGst,intSGst;
     boolean gst,sgst;
+    double toAmount;
     int totalAmount;
     String gstno;
     FileOutputStream outputStream;
     private File pdfFile;
-    private List<PdfGuardModel> exsistingList = new ArrayList<>();
     String monthName;
-    Context context;
-    public MainActivity(Context context, String s , String strGropNamePdf) {
+
+   /* public MainActivity(Context context, String s , String strGropNamePdf) {
         this.context = context;
         Type type = new TypeToken<List<LabelActivityModel>>() {
         }.getType();
         exsistingList = GsonUtils.getInstance().fromJson(s, type);
-    }
+    }*/
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        addDetailActivity1 = (AddDetailActivity1) getApplicationContext();
         Bundle bundle = getIntent().getExtras();
         if(bundle!=null)
         {
@@ -89,8 +93,9 @@ AddDetailActivity1 addDetailActivity1;
         sgst=bundle.getBoolean("sgst");
         gstno=bundle.getString("gstno");
         for (int i = 0; i <gurdSize ; i++) {
-            /*amt = bundle.getIntegerArrayList("amount");
-            rate = bundle.getIntegerArrayList("rate");*/
+
+            rate = bundle.getIntegerArrayList("rate");
+            strduty = bundle.getStringArrayList("duty");
             guard = bundle.getStringArrayList("guard");
             guardcount = bundle.getStringArrayList("guardCount");
         }
@@ -98,48 +103,41 @@ AddDetailActivity1 addDetailActivity1;
             guard =intent.getStringArrayExtra("guard");*/
 
         }
-        for (int i = 0; i <gurdSize ; i++) {
+        for (int i = 0; i <strduty.size() ; i++) {
+            dblduty.add(Double.valueOf(strduty.get(i)));
+        }
 
-           total +=addDetailActivity1.amount.get(i);
+        for (int i = 0; i <rate.size() ; i++) {
+            oneDayRate.add(Double.valueOf((rate.get(i))));
+        }
+        for (int i = 0; i <dblduty.size() ; i++) {
+            amount.add(round(((((oneDayRate.get(i))/30)*dblduty.get(i))),4));
+        }
+
+        for (int i = 0; i <amount.size(); i++) {
+            total+=(amount.get(i));
         }
 
         if(gst==true)
         {
-            intGst=total*9/100;
-            totalAmount=intGst+total;
+            intGst=round(((total*9)/100),4);
+            intSGst=round(((total*9)/100),4);
+            toAmount=round((intGst+total+intSGst),4);
+            String s = String.valueOf(toAmount);
+            String str = s.replace(".", "");
+            totalAmount = Integer.parseInt(str);
 
         }
         else
         {
-            totalAmount=total;
-        }
-        if(sgst==true)
-        {
-            intSGst=total*9/100;
-            totalAmount=intSGst+total;
+            String s = String.valueOf(total);
+            String str = s.replace(".", "");
+            totalAmount = Integer.parseInt(str);
 
         }
-        else
-        {
-            totalAmount=total;
-        }
-        if(gst==true&&sgst==true)
-        {
-            totalAmount=intGst+intSGst+total;
-        }
-        else if(gst==true||sgst==true)
-        {
-            if(gst==true) {
-                totalAmount = intGst + total;
-            }
-            else {
-                totalAmount = intSGst + total;
 
-            }
-        }
-        else {
-            totalAmount=total;
-        }
+
+
 
         createPDF("Month/test", new PDFUtil.PDFUtilListener() {
             @Override
@@ -236,8 +234,6 @@ AddDetailActivity1 addDetailActivity1;
     @Override
     protected PDFBody getBodyViews() {
         PDFBody pdfBody = new PDFBody();
-
-
         PDFHorizontalView horizontalView = new PDFHorizontalView(getApplicationContext());
         PDFHorizontalWait1 horizontalView1 = new PDFHorizontalWait1(getApplicationContext());
 
@@ -337,7 +333,7 @@ AddDetailActivity1 addDetailActivity1;
         pdfBody.addView(newline);
         for (int j = 0; j <gurdSize ; j++) {
             PDFTableView.PDFTableRowView tableRowView1 = new PDFTableView.PDFTableRowView(getApplicationContext());
-            String[] textInTable = {""+guard.get(j), "("+guardcount.get(j)+")", "\t"+addDetailActivity1.rt.get(j)+".00", "\t\t"+addDetailActivity1.amount.get(j)+".00"};
+            String[] textInTable = {""+guard.get(j), "("+guardcount.get(j)+")", "\t"+rate.get(j)+".00", "\t\t"+amount.get(j)+".00"};
             for(int i = 0;  i<textInTable.length; i++) {
                 PDFTextView pdfTextView = new PDFTextView(getApplicationContext(), PDFTextView.PDF_TEXT_SIZE.P);
                 pdfTextView.setText(textInTable[i]);
@@ -556,4 +552,38 @@ AddDetailActivity1 addDetailActivity1;
         return ntw.convert(n);
     }
 */
+   public static double round(double value, int scale) {
+       return Math.round(value * Math.pow(10, scale)) / Math.pow(10, scale);
+   }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+
+
+        total=0;
+
+       amount.clear();
+         oneDayRate.clear();
+        rate.clear();
+        strduty.clear();
+        dblduty.clear();
+        guard.clear();
+        guardcount.clear();
+
+         gurdSize=0;
+        billDate="";
+                billNo="";
+                billAddress="";
+        intGst=0;
+                intSGst=0;
+        gst=false;
+                sgst=false;
+        toAmount=0;
+        totalAmount=0;
+         gstno="";
+
+        monthName="";
+    }
 }
