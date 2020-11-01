@@ -43,17 +43,15 @@ public class AddDetailActivity1 extends AppCompatActivity {
   RecyclerView guardRecycler;
   LinearLayout GuardLayout;
   EditText billDate,gstno;
-  EditText billNo;
+  EditText billNo,gstPercentage;
   DatePickerDialog picker;
-  CheckBox gstCheck,sgstCheck;
+  CheckBox gstCheck;
   Spinner addresh;
   String monthName;
   int monthvalue;
+  MyApplicationClass myApplicationClass;
   boolean sGstCheck=false,GstCheck=true;
-  public static  ArrayList<String > duty = new ArrayList<String >();
-  public static  ArrayList<Integer> rt = new ArrayList<Integer>();
-  public static  ArrayList<String  > guardcount = new ArrayList<String>();
-  public static  ArrayList<String  > grd = new ArrayList<String >();
+
   double total;
   String strTotal;
 
@@ -69,9 +67,9 @@ public class AddDetailActivity1 extends AppCompatActivity {
     guardRecycler=findViewById(R.id.gurdRecycler);
     GuardLayout=findViewById(R.id.layout);
     gstCheck=findViewById(R.id.Gst);
-    sgstCheck=findViewById(R.id.SGst);
     gstno=findViewById(R.id.gst);
-
+    gstPercentage=findViewById(R.id.gst_per);
+myApplicationClass=(MyApplicationClass)getApplicationContext();
 
     List<String> categories = new ArrayList<String>();
     categories.add("Eltee Geejay");
@@ -195,16 +193,20 @@ public class AddDetailActivity1 extends AppCompatActivity {
       @Override
       public void onClick(View view) {
         for (int i = 0; i <labelActivityModels.size() ; i++) {
-          duty.add(i, String.valueOf(labelActivityModels.get(i).getAmount()));
-          rt.add(i, Integer.valueOf(labelActivityModels.get(i).getRate()));
-          grd.add(i, (labelActivityModels.get(i).getGuardType()));
-          guardcount.add(i, (labelActivityModels.get(i).getGuard()));
+          myApplicationClass.amount.add(i, Float.valueOf(labelActivityModels.get(i).getAmount()));
+          myApplicationClass.rt.add(i, Float.valueOf(labelActivityModels.get(i).getRate()));
+          myApplicationClass.grd.add(i, (labelActivityModels.get(i).getGuardType()));
+          myApplicationClass.guardcount.add(i, (labelActivityModels.get(i).getGuard()));
 
 
 
 
         }
 
+        for (int i = 0; i <myApplicationClass.amount.size() ; i++) {
+
+          myApplicationClass.totalAmount=myApplicationClass.totalAmount+myApplicationClass.amount.get(i);
+        }
 
 
 
@@ -216,29 +218,33 @@ public class AddDetailActivity1 extends AppCompatActivity {
         else {
           GstCheck=false;
         }
-        if (sgstCheck.isChecked())
+
+
+        if(gstCheck.isChecked()&&!gstPercentage.getText().toString().isEmpty())
         {
-          sGstCheck=true;
+          myApplicationClass.gstAmount=((myApplicationClass.totalAmount)*(Integer.parseInt(gstPercentage.getText().toString()))/100);
+          myApplicationClass.gstandTotalAmount=myApplicationClass.totalAmount+myApplicationClass.gstAmount;
         }
         else {
-          sGstCheck=false;
+          myApplicationClass.gstandTotalAmount=myApplicationClass.totalAmount;
         }
+
+
+        String strTotal= String.valueOf(myApplicationClass.gstandTotalAmount);
+        myApplicationClass.totalforWord= Math.round(Float.parseFloat(strTotal));
         Intent intent=new Intent(AddDetailActivity1.this,MainActivity.class);
 
-        intent.putIntegerArrayListExtra("rate",rt);
-        intent.putStringArrayListExtra("duty",duty);
-        intent.putStringArrayListExtra("guard",grd);
-        intent.putStringArrayListExtra("guardCount",guardcount);
+      /*  intent.putIntegerArrayListExtra("rate", myApplicationClass.rt);
+        intent.putStringArrayListExtra("duty", myApplicationClass.duty);*/
+        intent.putStringArrayListExtra("guard", myApplicationClass.grd);
+        intent.putStringArrayListExtra("guardCount", myApplicationClass.guardcount);
         intent.putExtra("date",billDate.getText().toString());
         intent.putExtra("billno",billNo.getText().toString());
         intent.putExtra("size",labelActivityModels.size());
         intent.putExtra("add",billAddress);
         intent.putExtra("gst",GstCheck);
-        intent.putExtra("sgst",sGstCheck);
         intent.putExtra("gstno", gstno.getText().toString());
         intent.putExtra("month",monthName);
-        intent.putExtra("strTotal",strTotal);
-        intent.putExtra("exsistingList", GsonUtils.getInstance().toJson(labelActivityModels));
         startActivity(intent);
 
 
@@ -267,7 +273,7 @@ public class AddDetailActivity1 extends AppCompatActivity {
         dialogBuilder = new AlertDialog.Builder(AddDetailActivity1.this);
 // ...Irrelevant code for customizing the buttons and title
         View       dialogView = LayoutInflater.from(AddDetailActivity1.this).inflate(R.layout.label_data_layout,null, false);
-        final EditText etPcs,etRate,etWt,etAmount,etguard;
+        final EditText etPcs,etRate,etWt,etDuty,etguard;
         LinearLayout addItem;
 
         Button btnSave;
@@ -279,7 +285,7 @@ public class AddDetailActivity1 extends AppCompatActivity {
         GridLayoutManager label_LayoutManager;
         sprInvcode=dialogView.findViewById(R.id.invcode);
         etRate=dialogView.findViewById(R.id.rate);
-        etAmount=dialogView.findViewById(R.id.amt);
+        etDuty=dialogView.findViewById(R.id.duty);
         addItem=dialogView.findViewById(R.id.addItem);
         etguard=dialogView.findViewById(R.id.guard);
         btnSave=dialogView.findViewById(R.id.save);
@@ -323,7 +329,7 @@ public class AddDetailActivity1 extends AppCompatActivity {
         label_LayoutManager = new GridLayoutManager(AddDetailActivity1.this, 1);
         labelRecycler.setLayoutManager(label_LayoutManager);
         labelMasterModel = new ArrayList<>();
-        labelMasterAdapter = new LabelMasterAdapter(AddDetailActivity1.this, labelMasterModel);
+        labelMasterAdapter = new LabelMasterAdapter(AddDetailActivity1.this, labelActivityModels);
         labelRecycler.setAdapter(labelMasterAdapter);
 
 
@@ -331,28 +337,28 @@ public class AddDetailActivity1 extends AppCompatActivity {
         addItem.setOnClickListener(new View.OnClickListener() {
           @Override
           public void onClick(View v) {
-            if (!etRate.getText().toString().isEmpty()&& !etAmount.getText().toString().isEmpty()) {
+            if (!etRate.getText().toString().isEmpty()&& !etDuty.getText().toString().isEmpty()) {
               try {
                              /*   float number = Float.valueOf(etAmount.getText().toString());
                                 int i = Math.round(number);*/
 
-                int frate = Integer.valueOf(etRate.getText().toString());
+                double frate = Double.valueOf(etRate.getText().toString());
 
                 String round_rate= String.valueOf(frate);
                 double  oneDay=frate/30;
-                double totalAmount=oneDay*(Double.valueOf(etAmount.getText().toString()));
-                String duty= etAmount.getText().toString();
+                double totalAmount=oneDay*(Double.valueOf(etDuty.getText().toString()));
+                String amount= String.valueOf(totalAmount);
                 String strGuard=etguard.getText().toString();
 
-                labelMasterModel.add(new LabelMasterModel(guardName,round_rate,duty,strGuard));
-                labelActivityModels.add(new LabelActivityModel(guardName,round_rate,duty,strGuard));
+                labelMasterModel.add(new LabelMasterModel(guardName,round_rate,amount,strGuard));
+                labelActivityModels.add(new LabelActivityModel(guardName,round_rate,amount,strGuard));
 
                 labelActivityAdapter.notifyDataSetChanged();
                 labelMasterAdapter.notifyDataSetChanged();
 
 
                 etRate.setText("");
-                etAmount.setText("");
+                etDuty.setText("");
                 etguard.setText("");
                 etRate.requestFocus();
               } catch (Exception e) {

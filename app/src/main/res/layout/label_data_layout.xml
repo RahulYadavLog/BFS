@@ -63,7 +63,7 @@
                     android:singleLine="true"
                     android:layout_height="wrap_content"/>
                 <EditText
-                    android:id="@+id/amt"
+                    android:id="@+id/duty"
                     android:layout_width="0dp"
                     android:hint="Duty"
                     android:gravity="center"

@@ -17,16 +17,17 @@
         android:layout_marginLeft="10dp"
         android:transitionName="logo_img"
         android:layout_marginRight="10dp"
-        android:src="@drawable/logo2"/>
+        android:src="@drawable/applogo"/>
     <TextView
         android:id="@+id/app_Name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:textSize="50dp"
+        android:layout_marginTop="50dp"
         android:transitionName="logo_name"
         android:textColor="@color/white"
-        android:text="ButterFly"/>
+        android:text="Bombay Facility Service"/>
     <TextView
         android:id="@+id/app_Desc"
         android:layout_width="match_parent"
@@ -34,6 +35,6 @@
         android:textColor="@color/white"
         android:transitionName="logo_title"
         android:gravity="center"
-        android:text="New ButterFly App"/>
+        android:text="Provide Security Guard"/>
 
 </LinearLayout>

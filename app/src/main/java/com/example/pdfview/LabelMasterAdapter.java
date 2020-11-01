@@ -17,12 +17,12 @@ import static android.content.ContentValues.TAG;
 
 public class LabelMasterAdapter extends RecyclerView.Adapter<LabelMasterAdapter.LabelView> {
     Context context;
-    List<LabelMasterModel> labelMasterModels;
-
-    public LabelMasterAdapter(Context context, List<LabelMasterModel> labelMasterModels) {
+    List<LabelActivityModel>labelMasterModels;
+    public LabelMasterAdapter(Context context, List<LabelActivityModel> labelMasterModels) {
         this.context = context;
         this.labelMasterModels = labelMasterModels;
     }
+
 
     @NonNull
     @Override
@@ -34,9 +34,8 @@ public class LabelMasterAdapter extends RecyclerView.Adapter<LabelMasterAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull LabelView holder, final int position) {
-        LabelMasterModel label=labelMasterModels.get(position);
+        LabelActivityModel label=labelMasterModels.get(position);
         holder.txtInvcode.setText(label.getGuardType());
-
         holder.txtRate.setText(label.getRate());
         holder.txtAmount.setText(label.getAmount());
         holder.txtguard.setText(label.getGuard());
@@ -44,6 +43,7 @@ public class LabelMasterAdapter extends RecyclerView.Adapter<LabelMasterAdapter.
             @Override
             public void onClick(View v) {
                 labelMasterModels.remove(position);
+
                 notifyDataSetChanged();
                 Log.e(TAG,"Data Not attach");
 

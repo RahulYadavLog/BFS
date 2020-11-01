@@ -54,23 +54,17 @@ public class MainActivity extends PDFCreatorActivity {
     double total=0;
 
 
-    public static  ArrayList<Double> amount = new ArrayList<Double>();
-    public static  ArrayList<Double> oneDayRate = new ArrayList<Double>();
-    public static  ArrayList<Integer> rate = new ArrayList<Integer >();
-    public static  ArrayList<String> strduty = new ArrayList<String >();
-    public static  ArrayList<Double> dblduty = new ArrayList<Double>();
-    public static  ArrayList<String> guard = new ArrayList<String >();
-    public static  ArrayList<String> guardcount = new ArrayList<String >();
     int gurdSize;
     String billDate,billNo,billAddress;
     double intGst,intSGst;
-    boolean gst,sgst;
+    boolean gst;
     double toAmount;
     int totalAmount;
     String gstno;
     FileOutputStream outputStream;
     private File pdfFile;
     String monthName;
+    MyApplicationClass myApplicationClass;
 
    /* public MainActivity(Context context, String s , String strGropNamePdf) {
         this.context = context;
@@ -81,6 +75,7 @@ public class MainActivity extends PDFCreatorActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        myApplicationClass=(MyApplicationClass)getApplicationContext();
         Bundle bundle = getIntent().getExtras();
         if(bundle!=null)
         {
@@ -90,20 +85,20 @@ public class MainActivity extends PDFCreatorActivity {
         billAddress=bundle.getString("add");
         monthName=bundle.getString("month");
         gst=bundle.getBoolean("gst");
-        sgst=bundle.getBoolean("sgst");
+
         gstno=bundle.getString("gstno");
-        for (int i = 0; i <gurdSize ; i++) {
+      /*  for (int i = 0; i <gurdSize ; i++) {
 
             rate = bundle.getIntegerArrayList("rate");
             strduty = bundle.getStringArrayList("duty");
             guard = bundle.getStringArrayList("guard");
             guardcount = bundle.getStringArrayList("guardCount");
-        }
+        }*/
             /*rate =intent.getStringArrayExtra("rate");
             guard =intent.getStringArrayExtra("guard");*/
 
         }
-        for (int i = 0; i <strduty.size() ; i++) {
+       /* for (int i = 0; i <strduty.size() ; i++) {
             dblduty.add(Double.valueOf(strduty.get(i)));
         }
 
@@ -138,7 +133,7 @@ public class MainActivity extends PDFCreatorActivity {
 
 
 
-
+*/
         createPDF("Month/test", new PDFUtil.PDFUtilListener() {
             @Override
             public void pdfGenerationSuccess(File savedPDFFile) {
@@ -333,7 +328,7 @@ public class MainActivity extends PDFCreatorActivity {
         pdfBody.addView(newline);
         for (int j = 0; j <gurdSize ; j++) {
             PDFTableView.PDFTableRowView tableRowView1 = new PDFTableView.PDFTableRowView(getApplicationContext());
-            String[] textInTable = {""+guard.get(j), "("+guardcount.get(j)+")", "\t"+rate.get(j)+".00", "\t\t"+amount.get(j)+".00"};
+            String[] textInTable = {""+myApplicationClass.grd.get(j), "("+myApplicationClass.guardcount.get(j)+")", "\t"+myApplicationClass.rt.get(j)+".00", "\t\t"+myApplicationClass.amount.get(j)+".00"};
             for(int i = 0;  i<textInTable.length; i++) {
                 PDFTextView pdfTextView = new PDFTextView(getApplicationContext(), PDFTextView.PDF_TEXT_SIZE.P);
                 pdfTextView.setText(textInTable[i]);
@@ -375,7 +370,7 @@ public class MainActivity extends PDFCreatorActivity {
         horizontaltaxable.addView(horizontalView1taxable);
         PDFHorizontalWait2 horizontalView2taxable = new PDFHorizontalWait2(getApplicationContext());
         PDFTableView.PDFTableRowView tableRowtaxable= new PDFTableView.PDFTableRowView(getApplicationContext());
-        String[] taxable = {" "+total+".00"};
+        String[] taxable = {" "+myApplicationClass.totalAmount+".00"};
         for(int i = 0;  i<taxable.length; i++) {
             PDFTextView pdfTextView = new PDFTextView(getApplicationContext(), PDFTextView.PDF_TEXT_SIZE.P);
             pdfTextView.setText(taxable[i]);
@@ -408,7 +403,7 @@ public class MainActivity extends PDFCreatorActivity {
         horizontalcgst.addView(horizontalView1cgst);
         PDFHorizontalWait2 horizontalView2cgst = new PDFHorizontalWait2(getApplicationContext());
         PDFTableView.PDFTableRowView tableRowViewcgst= new PDFTableView.PDFTableRowView(getApplicationContext());
-        String[] cGST = {"\n "+intGst+".00"};
+        String[] cGST = {"\n "+myApplicationClass.gstAmount+".00"};
         for(int i = 0;  i<cGST.length; i++) {
             PDFTextView pdfTextView = new PDFTextView(getApplicationContext(), PDFTextView.PDF_TEXT_SIZE.P);
             pdfTextView.setText(cGST[i]);
@@ -439,7 +434,7 @@ public class MainActivity extends PDFCreatorActivity {
 
         PDFHorizontalWait2 horizontalView2sgst = new PDFHorizontalWait2(getApplicationContext());
         PDFTableView.PDFTableRowView tableRowView7= new PDFTableView.PDFTableRowView(getApplicationContext());
-        String[] sgst  = {"\n "+intSGst+".00"};
+        String[] sgst  = {"\n "+myApplicationClass.gstAmount+".00"};
         for(int i = 0;  i<sgst .length; i++) {
             PDFTextView pdfTextView = new PDFTextView(getApplicationContext(), PDFTextView.PDF_TEXT_SIZE.P);
             pdfTextView.setText(sgst[i]);
@@ -456,7 +451,7 @@ public class MainActivity extends PDFCreatorActivity {
         PDFLineSeparatorView lineSeparatorView11 = new PDFLineSeparatorView(getApplicationContext()).setBackgroundColor(Color.BLACK);
         pdfBody.addView(lineSeparatorView11);
         PDFTableView.PDFTableRowView tableRowView13= new PDFTableView.PDFTableRowView(getApplicationContext());
-        String[] total = {"Total Amount", "", "", "\t\t  "+totalAmount+".00"};
+        String[] total = {"Total Amount", "", "", "\t\t  "+myApplicationClass.gstandTotalAmount+".00"};
         for(int i = 0;  i<total.length; i++) {
             PDFTextView pdftotal = new PDFTextView(getApplicationContext(), PDFTextView.PDF_TEXT_SIZE.P);
             pdftotal.setText(total[i]);
@@ -477,7 +472,7 @@ public class MainActivity extends PDFCreatorActivity {
         word.setText("Words :\t");
         tableRowView8.addView(word);
         PDFTextView word_data = new PDFTextView(getApplicationContext(), PDFTextView.PDF_TEXT_SIZE.P);
-        String english =   NumberToword.convert(totalAmount);
+        String english =   NumberToword.convert(myApplicationClass.totalforWord);
 /*
         String english =   EnglishNumberToWords.convert((totalAmount));
 */
@@ -564,13 +559,14 @@ public class MainActivity extends PDFCreatorActivity {
 
         total=0;
 
-       amount.clear();
-         oneDayRate.clear();
-        rate.clear();
-        strduty.clear();
-        dblduty.clear();
-        guard.clear();
-        guardcount.clear();
+       myApplicationClass.amount.clear();
+        myApplicationClass.rt.clear();
+        myApplicationClass.grd.clear();
+        myApplicationClass.guardcount.clear();
+        myApplicationClass.gstandTotalAmount=0.0;
+        myApplicationClass.totalforWord=0;
+        myApplicationClass.gstAmount=0.0;
+        myApplicationClass.totalAmount=0.0;
 
          gurdSize=0;
         billDate="";
@@ -579,7 +575,6 @@ public class MainActivity extends PDFCreatorActivity {
         intGst=0;
                 intSGst=0;
         gst=false;
-                sgst=false;
         toAmount=0;
         totalAmount=0;
          gstno="";
